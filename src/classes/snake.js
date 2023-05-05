@@ -1,36 +1,60 @@
 class Snake {
-  constructor(defaultSpeed = 2, ...headAttributes) {
+  constructor(defaultSpeed = 2) {
     this.speed = defaultSpeed;
-    [this.x, this.y, this.w, this.h] = headAttributes;
     this.direction = "RIGHT";
+    this.body = [{ x: width / 2, y: height / 2, prevX: width / 2, prevY: height / 2 }];
   }
 
   move() {
+    const head = this.body[this.body.length - 1];
+    const newHead = {
+      x: head.x,
+      y: head.y,
+      prevX: head.x,
+      prevY: head.y,
+    };
+
     if (this.direction === "RIGHT") {
-      this.x += this.speed;
+      newHead.x += this.speed;
     } else if (this.direction === "LEFT") {
-      this.x -= this.speed;
+      newHead.x -= this.speed;
     } else if (this.direction === "TOP") {
-      this.y -= this.speed;
+      newHead.y -= this.speed;
     } else if (this.direction === "BOTTOM") {
-      this.y += this.speed;
+      newHead.y += this.speed;
     }
 
-    if (this.x + this.w < 0) {
-      this.x = width - this.w / 2;
-    } else if (this.x - this.w / 2 > width) {
-      this.x = -this.w / 2;
-    }
+    this.body.push(newHead);
+    this.body.shift();
 
-    if (this.y + this.h < 0) {
-      this.y = height - this.h / 2;
-    } else if (this.y - this.h / 2 > height) {
-      this.y = -this.h / 2;
+    for (let i = this.body.length - 1; i > 0; i--) {
+      const currentSegment = this.body[i];
+      const prevSegment = this.body[i - 1];
+      currentSegment.prevX = prevSegment.x;
+      currentSegment.prevY = prevSegment.y;
+    }
+  }
+
+  eat(food) {
+    const head = this.body[this.body.length - 1];
+    if (dist(head.x, head.y, food.x, food.y) < 10) {
+      const currentTail = this.body[0];
+      this.body.unshift({
+        x: currentTail.x,
+        y: currentTail.x,
+        prevX: currentTail.prevX,
+        prevY: currentTail.prevY,
+      });
+      this.speed += 0.1;
+      food.changeLocation();
     }
   }
 
   draw() {
-    fill(255);
-    rect(this.x, this.y, this.w, this.h);
+    noStroke();
+    fill(0, 255, 0);
+    this.body.forEach((elt, i) => {
+      ellipse(elt.x, elt.y, 20);
+    });
   }
 }
