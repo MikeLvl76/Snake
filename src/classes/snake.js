@@ -49,7 +49,9 @@ class Snake {
       });
       this.speed += 0.1;
       food.changeLocation();
+      return 1;
     }
+    return 0;
   }
 
   isColliding(position) {
