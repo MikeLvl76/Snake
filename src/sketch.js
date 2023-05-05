@@ -1,6 +1,7 @@
 let snake = null;
 let food = null;
 let score = 0;
+let time = 0;
 
 let divElt,
   labelScore,
@@ -25,6 +26,7 @@ function resetSketch() {
   ]);
 
   score = 0;
+  time = 0;
 
   if (!isLooping()) {
     loop();
@@ -33,18 +35,46 @@ function resetSketch() {
 
 function setup() {
   createCanvas(600, 600);
-  labelScore = createElement("label", "Score:");
+
+  textTime = createElement("p", time.toString());
   textScore = createElement("p", score.toString());
   playAgain = createElement("button", "Play again");
 
+  textTime.id("text_time");
+  textScore.id("text_score");
+  playAgain.id("play_again");
+
+  textTime.attribute('title', 'In-game time');
+  textScore.attribute('title', 'Score');
+  playAgain.attribute('title', 'Restart game');
+
   divElt = createElement("div");
-  labelScore.child(divElt);
-  textScore.child(divElt);
-  playAgain.child(divElt);
+  divElt.id("content");
+
+  divElt.child(textTime);
+  divElt.child(textScore);
+  divElt.child(playAgain);
 
   playAgain.mousePressed(resetSketch);
 
   resetSketch();
+
+  setInterval(() => {
+    time++;
+
+    // calculate minutes and seconds elapsed
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+
+    // add leading zeros if needed
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+
+    // create formatted time string
+    const timeString = `${formattedMinutes}:${formattedSeconds}`;
+
+    textTime.html(timeString);
+  }, 1000);
 }
 
 function draw() {
