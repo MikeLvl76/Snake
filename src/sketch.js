@@ -1,6 +1,15 @@
 let snake = null;
 let food = null;
 
+function gameOver() {
+  background(0);
+  textSize(32);
+  textAlign(CENTER);
+  fill(255, 0, 0);
+  text("Game over!", width / 2, height / 2);
+  noLoop();
+}
+
 function setup() {
   createCanvas(600, 600);
   snake = new Snake(3);
@@ -16,17 +25,28 @@ function draw() {
   food.display();
   snake.move();
   snake.draw();
-  snake.eat(food)
+  snake.eat(food);
+
+  if (snake.isCrossingBorders()) {
+    gameOver();
+  }
+
+  for (let i = 1; i < snake.body.length; i++) {
+    if (snake.isColliding(snake.body[i])) {
+      gameOver();
+      return;
+    }
+  }
 }
 
 function keyPressed() {
-  if (keyCode === LEFT_ARROW) {
+  if (keyCode === LEFT_ARROW && snake.direction !== "RIGHT") {
     snake.direction = "LEFT";
-  } else if (keyCode === RIGHT_ARROW) {
+  } else if (keyCode === RIGHT_ARROW && snake.direction !== "LEFT") {
     snake.direction = "RIGHT";
-  } else if (keyCode === UP_ARROW) {
+  } else if (keyCode === UP_ARROW && snake.direction !== "BOTTOM") {
     snake.direction = "TOP";
-  } else if (keyCode === DOWN_ARROW) {
+  } else if (keyCode === DOWN_ARROW && snake.direction !== "TOP") {
     snake.direction = "BOTTOM";
   }
 }

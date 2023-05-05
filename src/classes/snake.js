@@ -2,7 +2,9 @@ class Snake {
   constructor(defaultSpeed = 2) {
     this.speed = defaultSpeed;
     this.direction = "RIGHT";
-    this.body = [{ x: width / 2, y: height / 2, prevX: width / 2, prevY: height / 2 }];
+    this.body = [
+      { x: width / 2, y: height / 2, prevX: width / 2, prevY: height / 2 },
+    ];
   }
 
   move() {
@@ -48,6 +50,16 @@ class Snake {
       this.speed += 0.1;
       food.changeLocation();
     }
+  }
+
+  isColliding(position) {
+    const { x, y } = this.body[0];
+    return x === position.x && y === position.y;
+  }
+
+  isCrossingBorders() {
+    const { x, y } = this.body[0];
+    return x > width || x < 0 || y > height || y < 0;
   }
 
   draw() {
