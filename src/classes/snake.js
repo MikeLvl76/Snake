@@ -34,28 +34,3 @@ class Snake {
     rect(this.x, this.y, this.w, this.h);
   }
 }
-
-let snake = null;
-
-function setup() {
-  createCanvas(600, 600);
-  snake = new Snake(3, width / 2, height / 2, 50, 50);
-}
-
-function draw() {
-  background(0);
-  snake.move();
-  snake.draw();
-}
-
-function keyPressed() {
-  if (keyCode === LEFT_ARROW) {
-    snake.direction = "LEFT";
-  } else if (keyCode === RIGHT_ARROW) {
-    snake.direction = "RIGHT";
-  } else if (keyCode === UP_ARROW) {
-    snake.direction = "TOP";
-  } else if (keyCode === DOWN_ARROW) {
-    snake.direction = "BOTTOM";
-  }
-}
