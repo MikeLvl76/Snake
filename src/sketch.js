@@ -1,7 +1,8 @@
 let snake = null;
 let food = null;
 let score = 0;
-let time = 0;
+let timer = 0;
+let interval = null;
 
 let divElt,
   labelScore,
@@ -9,15 +10,18 @@ let divElt,
   playAgain = null;
 
 function gameOver() {
+  clearInterval(interval);
   background(0);
   textSize(32);
   textAlign(CENTER);
   fill(255, 0, 0);
   text("Game over!", width / 2, height / 2);
+  text('Click on \'Play again\' or press SPACE key.', width / 2, height / 2 + 50);
   noLoop();
 }
 
 function resetSketch() {
+  clearInterval(interval);
   snake = new Snake(3);
   food = new Food(random(20, width - 20), random(20, height - 20), 5, [
     random(0, 255),
@@ -26,17 +30,35 @@ function resetSketch() {
   ]);
 
   score = 0;
-  time = 0;
+  timer = 0;
+  textTime.html('00:00');
 
   if (!isLooping()) {
     loop();
   }
+
+  interval = setInterval(() => {
+    timer++;
+
+    // calculate minutes and seconds elapsed
+    const minutes = Math.floor(timer / 60);
+    const seconds = timer % 60;
+
+    // add leading zeros if needed
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+
+    // create formatted timer string
+    const timeString = `${formattedMinutes}:${formattedSeconds}`;
+
+    textTime.html(timeString);
+  }, 1000);
 }
 
 function setup() {
   createCanvas(600, 600);
 
-  textTime = createElement("p", time.toString());
+  textTime = createElement("p", '00:00');
   textScore = createElement("p", score.toString());
   playAgain = createElement("button", "Play again");
 
@@ -44,9 +66,9 @@ function setup() {
   textScore.id("text_score");
   playAgain.id("play_again");
 
-  textTime.attribute('title', 'In-game time');
-  textScore.attribute('title', 'Score');
-  playAgain.attribute('title', 'Restart game');
+  textTime.attribute("title", "In-game timer");
+  textScore.attribute("title", "Score");
+  playAgain.attribute("title", "Restart game");
 
   divElt = createElement("div");
   divElt.id("content");
@@ -58,23 +80,6 @@ function setup() {
   playAgain.mousePressed(resetSketch);
 
   resetSketch();
-
-  setInterval(() => {
-    time++;
-
-    // calculate minutes and seconds elapsed
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-
-    // add leading zeros if needed
-    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-    const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
-
-    // create formatted time string
-    const timeString = `${formattedMinutes}:${formattedSeconds}`;
-
-    textTime.html(timeString);
-  }, 1000);
 }
 
 function draw() {
@@ -112,5 +117,7 @@ function keyPressed() {
     snake.direction = "TOP";
   } else if (keyCode === DOWN_ARROW && snake.direction !== "TOP") {
     snake.direction = "BOTTOM";
+  } else if (key === ' ') {
+    resetSketch();
   }
 }

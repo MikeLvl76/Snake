@@ -67,8 +67,14 @@ class Snake {
   draw() {
     noStroke();
     fill(0, 255, 0);
-    this.body.forEach((elt, i) => {
-      ellipse(elt.x, elt.y, 20);
+    this.body.slice(0, this.body.length - 1).forEach((elt) => {
+      ellipse(elt.x, elt.y, 10);
     });
+
+    stroke(0);
+    strokeWeight(1);
+    fill(0, 127, 0);
+    const head = this.body[this.body.length - 1];
+    ellipse(head.x, head.y, 15);
   }
 }
