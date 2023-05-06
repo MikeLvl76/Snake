@@ -20,9 +20,9 @@ class Snake {
       newHead.x += this.speed;
     } else if (this.direction === "LEFT") {
       newHead.x -= this.speed;
-    } else if (this.direction === "TOP") {
+    } else if (this.direction === "UP") {
       newHead.y -= this.speed;
-    } else if (this.direction === "BOTTOM") {
+    } else if (this.direction === "DOWN") {
       newHead.y += this.speed;
     }
 
@@ -30,10 +30,8 @@ class Snake {
     this.body.shift();
 
     for (let i = this.body.length - 1; i > 0; i--) {
-      const currentSegment = this.body[i];
-      const prevSegment = this.body[i - 1];
-      currentSegment.prevX = prevSegment.x;
-      currentSegment.prevY = prevSegment.y;
+      this.body[i].prevX = this.body[i - 1].x;
+      this.body[i].prevY = this.body[i - 1].y;
     }
   }
 
@@ -43,7 +41,7 @@ class Snake {
       const currentTail = this.body[0];
       this.body.unshift({
         x: currentTail.x,
-        y: currentTail.x,
+        y: currentTail.y,
         prevX: currentTail.prevX,
         prevY: currentTail.prevY,
       });
@@ -54,13 +52,8 @@ class Snake {
     return 0;
   }
 
-  isColliding(position) {
-    const { x, y } = this.body[0];
-    return x === position.x && y === position.y;
-  }
-
   isCrossingBorders() {
-    const { x, y } = this.body[0];
+    const { x, y } = this.body[this.body.length - 1];
     return x > width || x < 0 || y > height || y < 0;
   }
 

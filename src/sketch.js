@@ -21,6 +21,7 @@ function gameOver() {
 }
 
 function resetSketch() {
+  // Prevent previous setInterval running
   clearInterval(interval);
   snake = new Snake(3);
   food = new Food(random(20, width - 20), random(20, height - 20), 5, [
@@ -99,13 +100,6 @@ function draw() {
   if (snake.isCrossingBorders()) {
     gameOver();
   }
-
-  for (let i = 1; i < snake.body.length; i++) {
-    if (snake.isColliding(snake.body[i])) {
-      gameOver();
-      return;
-    }
-  }
 }
 
 function keyPressed() {
@@ -113,10 +107,10 @@ function keyPressed() {
     snake.direction = "LEFT";
   } else if (keyCode === RIGHT_ARROW && snake.direction !== "LEFT") {
     snake.direction = "RIGHT";
-  } else if (keyCode === UP_ARROW && snake.direction !== "BOTTOM") {
-    snake.direction = "TOP";
-  } else if (keyCode === DOWN_ARROW && snake.direction !== "TOP") {
-    snake.direction = "BOTTOM";
+  } else if (keyCode === UP_ARROW && snake.direction !== "DOWN") {
+    snake.direction = "UP";
+  } else if (keyCode === DOWN_ARROW && snake.direction !== "UP") {
+    snake.direction = "DOWN";
   } else if (key === ' ') {
     resetSketch();
   }
