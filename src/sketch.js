@@ -1,3 +1,4 @@
+let startGame = false;
 let snake = null;
 let food = null;
 let score = 0;
@@ -8,6 +9,17 @@ let divElt,
   labelScore,
   textScore,
   playAgain = null;
+
+function menu() {
+  textSize(32);
+  textAlign(CENTER);
+  fill(255);
+  text("Click to play", width / 2, height / 2);
+
+  if (mouseIsPressed) {
+    startGame = true;
+  }
+}
 
 // Store score and time locally in browser
 function saveResult() {
@@ -35,7 +47,6 @@ function gameOver() {
   const scoresX = width / 2;
   const timesX = width / 2 + 150;
   const columnWidth = 150;
-
 
   fill(255);
   stroke(255, 0, 0);
@@ -95,6 +106,9 @@ function resetSketch() {
   }
 
   interval = setInterval(() => {
+    if (!startGame) {
+      return;
+    }
     timer++;
 
     // calculate minutes and seconds elapsed
@@ -142,19 +156,23 @@ function setup() {
 function draw() {
   background(0);
 
-  stroke(255, 0, 0);
-  strokeWeight(5);
-  noFill();
-  rect(0, 0, width, height);
+  if (!startGame) {
+    menu();
+  } else {
+    stroke(255, 0, 0);
+    strokeWeight(5);
+    noFill();
+    rect(0, 0, width, height);
 
-  food.display();
-  snake.move();
-  snake.draw();
-  score += snake.eat(food);
-  textScore.html(score.toString());
+    food.display();
+    snake.move();
+    snake.draw();
+    score += snake.eat(food);
+    textScore.html(score.toString());
 
-  if (snake.isCrossingBorders()) {
-    gameOver();
+    if (snake.isCrossingBorders()) {
+      gameOver();
+    }
   }
 }
 
