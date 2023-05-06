@@ -9,14 +9,70 @@ let divElt,
   textScore,
   playAgain = null;
 
+// Store score and time locally in browser
+function saveResult() {
+  const data = localStorage.getItem("saves");
+  const saves = data ? JSON.parse(data) : [];
+  saves.push({ score, time: textTime.html() });
+  localStorage.setItem("saves", JSON.stringify(saves));
+  return saves.sort((a, b) => b.score - a.score);
+}
+
 function gameOver() {
+  const saves = saveResult();
   clearInterval(interval);
+
   background(0);
+
   textSize(32);
   textAlign(CENTER);
   fill(255, 0, 0);
-  text("Game over!", width / 2, height / 2);
-  text('Click on \'Play again\' or press SPACE key.', width / 2, height / 2 + 50);
+  text("Game over!", width / 2, height / 4);
+  text("Click on 'Play again' or press SPACE key.", width / 2, height / 4 + 50);
+
+  // Column positions and widths
+  const positionsX = width / 2 - 150;
+  const scoresX = width / 2;
+  const timesX = width / 2 + 150;
+  const columnWidth = 150;
+
+
+  fill(255);
+  stroke(255, 0, 0);
+  strokeWeight(1);
+
+  // Table header
+  textSize(24);
+  text("Position", positionsX, height / 4 + 120);
+  text("Score", scoresX, height / 4 + 120);
+  text("Time", timesX, height / 4 + 120);
+
+  // Table separator
+  const separatorY = height / 4 + 130;
+  const separatorLength = 3 * columnWidth;
+  for (let i = 0; i < separatorLength; i += 10) {
+    line(
+      width / 2 - separatorLength / 2 + i,
+      separatorY,
+      width / 2 - separatorLength / 2 + i + 5,
+      separatorY
+    );
+  }
+
+  // Table body
+  textSize(20);
+  saves.slice(0, 5).forEach((save, i) => {
+    const positionText = `${i + 1}`;
+    const scoreText = `${save.score}`;
+    const timeText = `${save.time}`;
+
+    // Table row
+    textAlign(CENTER);
+    text(positionText, positionsX, height / 4 + 155 + i * 30);
+    text(scoreText, scoresX, height / 4 + 155 + i * 30);
+    text(timeText, timesX, height / 4 + 155 + i * 30);
+  });
+
   noLoop();
 }
 
@@ -32,7 +88,7 @@ function resetSketch() {
 
   score = 0;
   timer = 0;
-  textTime.html('00:00');
+  textTime.html("00:00");
 
   if (!isLooping()) {
     loop();
@@ -59,7 +115,7 @@ function resetSketch() {
 function setup() {
   createCanvas(600, 600);
 
-  textTime = createElement("p", '00:00');
+  textTime = createElement("p", "00:00");
   textScore = createElement("p", score.toString());
   playAgain = createElement("button", "Play again");
 
@@ -111,7 +167,7 @@ function keyPressed() {
     snake.direction = "UP";
   } else if (keyCode === DOWN_ARROW && snake.direction !== "UP") {
     snake.direction = "DOWN";
-  } else if (key === ' ') {
+  } else if (key === " ") {
     resetSketch();
   }
 }
