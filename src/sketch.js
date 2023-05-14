@@ -8,6 +8,7 @@ let interval = null;
 let divElt,
   labelScore,
   textScore,
+  textTime,
   playAgain = null;
 
 function menu() {
